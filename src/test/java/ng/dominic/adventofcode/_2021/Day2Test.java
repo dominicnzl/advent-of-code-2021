@@ -15,14 +15,14 @@ class Day2Test {
     @Test
     void task1() throws IOException {
         // forward = 15, down = 10 -> 15 * 10 = 150
-        assertThat(Day2.task1("aoc-2021-day2-sample")).isEqualTo(150);
-        logger.info("Answer for task 1 is {}", Day2.task1("aoc-2021-day2"));
+        assertThat(Day2.task1("_2021/day2-sample")).isEqualTo(150);
+        logger.info("Answer for task 1 is {}", Day2.task1("_2021/day2"));
     }
 
     @Test
     void task2() throws IOException {
-        assertThat(Day2.task2("aoc-2021-day2-sample")).isEqualTo(900);
-        logger.info("Answer for task 2 is {}", Day2.task2("aoc-2021-day2"));
+        assertThat(Day2.task2("_2021/day2-sample")).isEqualTo(900);
+        logger.info("Answer for task 2 is {}", Day2.task2("_2021/day2"));
     }
 
 }

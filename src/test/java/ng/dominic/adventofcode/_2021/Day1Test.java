@@ -14,13 +14,13 @@ class Day1Test {
 
     @Test
     void task1() throws IOException {
-        logger.info("Answer for task1 is: {}", Day1.countNumberOfIncreases("aoc-2021-day1"));
-        assertThat(Day1.countNumberOfIncreases("aoc-2021-day1-sample")).isEqualTo(7);
+        logger.info("Answer for task1 is: {}", Day1.countNumberOfIncreases("_2021/day1"));
+        assertThat(Day1.countNumberOfIncreases("_2021/day1-sample")).isEqualTo(7);
     }
 
     @Test
     void task2() throws IOException {
-        logger.info("Answer for task2 is: {}", Day1.countNumberOfIncreasedSlidingWindow("aoc-2021-day1"));
-        assertThat(Day1.countNumberOfIncreasedSlidingWindow("aoc-2021-day1-sample")).isEqualTo(5);
+        logger.info("Answer for task2 is: {}", Day1.countNumberOfIncreasedSlidingWindow("_2021/day1"));
+        assertThat(Day1.countNumberOfIncreasedSlidingWindow("_2021/day1-sample")).isEqualTo(5);
     }
 }
