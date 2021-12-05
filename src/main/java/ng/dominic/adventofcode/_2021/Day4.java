@@ -50,8 +50,42 @@ public class Day4 {
                 for (Board board : boards) {
                     var result = board.handleDraw(draw);
                     if (result > -1) {
-                        return result;
+                        return result * draw;
                     }
+                }
+            }
+            return 0;
+        }
+    }
+
+    // this one doesn't work... yet
+    public static int task2(String fileName) throws IOException {
+        try (var reader = read(fileName)) {
+            var draws = Arrays.stream(reader.readLine().split(",")).map(Integer::parseInt).toList();
+
+
+            // read the next blocks of 5*5 numbers until the end and set aside as the bingo cards
+            final AtomicInteger boardCounter = new AtomicInteger();
+            var boards = reader.lines()
+                    .filter(not(String::isEmpty))
+                    .collect(Collectors.groupingBy(it -> boardCounter.getAndIncrement() / 5))
+                    .values()
+                    .stream()
+                    .map(Day4::extractBoard)
+                    .collect(Collectors.toList());
+
+            // here we want the last draw that wins, which means all boards are bingo
+            int bingoCounter = 0;
+            for (Integer draw : draws) {
+                for (Board board : boards) {
+                    var result = board.handleDraw(draw);
+                    if (result > -1) {
+                        bingoCounter++;
+                    }
+                    if (bingoCounter < boards.size()) {
+                        continue;
+                    }
+                    return result * draw;
                 }
             }
             return 0;
@@ -72,27 +106,37 @@ public class Day4 {
 
         private List<List<Integer>> scores;
 
+        private boolean isBingod;
+
         public Board(List<List<Integer>> scores) {
             this.scores = scores;
         }
 
+        // checks if the draw is a hit, if so remove it from the scores
+        // then if it is a bingo, return remaining scores, else -1
         int handleDraw(int draw) {
-            var isFound = scores.stream()
-                    .flatMap(Collection::stream)
-                    .filter(Objects::nonNull)
-                    .anyMatch(it -> it == draw);
-
-            if (isFound) {
+            if (isDrawAHit(draw)) {
                 scores = removeScore(draw);
 
-                if (checkHorizontal() || checkVertical()) {
-                    var remainingScores = scores.stream().flatMap(Collection::stream)
-                            .filter(n -> n > -1)
-                            .reduce(0, Integer::sum);
-                    return remainingScores * draw;
+                if (isBingo()) {
+                    this.setBingod(true);
+                    return calculateRemainingScores();
                 }
             }
             return -1;
+        }
+
+        private boolean isDrawAHit(int draw) {
+            return scores.stream()
+                    .flatMap(Collection::stream)
+                    .filter(Objects::nonNull)
+                    .anyMatch(it -> it == draw);
+        }
+
+        private Integer calculateRemainingScores() {
+            return scores.stream().flatMap(Collection::stream)
+                    .filter(n -> n > -1)
+                    .reduce(0, Integer::sum);
         }
 
         // some weird shit to get this done... (turns out it was the immutability of toList() that I didn't think of)
@@ -112,6 +156,10 @@ public class Day4 {
                     .toList();
         }
 
+        boolean isBingo() {
+            return checkHorizontal() || checkVertical();
+        }
+
         boolean checkHorizontal() {
             // if scores contains draw, set that score to null
             // then check if bingo
@@ -124,7 +172,7 @@ public class Day4 {
         }
 
         public static <T> List<List<T>> transpose(List<List<T>> listList) {
-            return IntStream.range(0, 4)
+            return IntStream.range(0, listList.size() - 1)
                     .mapToObj(i -> listList.stream().map(l -> l.get(i)).toList())
                     .toList();
         }
@@ -134,6 +182,14 @@ public class Day4 {
             return "Board{" +
                     "scores=" + scores +
                     '}';
+        }
+
+        public boolean isBingod() {
+            return isBingod;
+        }
+
+        public void setBingod(boolean bingod) {
+            isBingod = bingod;
         }
     }
 
